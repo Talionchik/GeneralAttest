@@ -1,30 +1,31 @@
+# Проект для парсинга определенных сайтов. Поиск можно вести по выбранным категориям. 
+# Подходит для выполнения заказов по парсингу на фриланс-биржах.
+# Результаты сбора информации сохраняются в csv-файле. 
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 import os
 
-# Setting up session
+# Начало работы
 s = requests.session()
 
-# List contaiting all the films for which data has to be scraped from IMDB
+# Список фильмов, данные по которым необходимо удалить из анализа.
 films = []
 
-# Lists contaiting web scraped data
+# Список данных, найденных в интернете.
 names = []
 ratings = []
 genres = []
 
-# Define path where your films are present
-# For eg: "/Users/utkarsh/Desktop/films"
+# Путь где будут представлены ваши фильмы.
 path = input("Enter the path where your films are: ")
 
-# Films with extensions
 filmswe = os.listdir(path)
 
 for film in filmswe:
-    # Append into my films list (without extensions)
+    # Добавление в список моих фильмов
     films.append(os.path.splitext(film)[0])
-    # print(os.path.splitext(film)[0])
+   
 
 for line in films:
     # x = line.split(", ")
@@ -37,13 +38,13 @@ for line in films:
     try:
         response = s.get(URL)
 
-        #getting contect from IMDB Website
+        # Получение данных контента с выбранного сайта
         content = response.content
 
         # print(response.status_code)
 
         soup = BeautifulSoup(response.content, features="html.parser")
-        #searching all films containers found
+        # Поиск всех необходимых фильмов
         containers = soup.find_all("div", class_="lister-item-content")
         for result in containers:
             name1 = result.h3.a.text
@@ -72,8 +73,8 @@ for line in films:
     except Exception:
         print("Try again with valid combination of tile and release year")
 
-#storing in pandas dataframe
+# Хранение данных в датафрейме pandas 
 df = pd.DataFrame({'Film Name':names,'Rating':ratings,'Genre':genres})
 
-#making csv using pandas
+# Создание csv в pandas
 df.to_csv('film_ratings.csv', index=False, encoding='utf-8')
