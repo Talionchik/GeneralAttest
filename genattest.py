@@ -71,7 +71,7 @@ for line in films:
 
 
     except Exception:
-        print("Try again with valid combination of tile and release year")
+        print("Попробуйте изменить категорию или год")
 
 # Хранение данных в датафрейме pandas 
 df = pd.DataFrame({'Film Name':names,'Rating':ratings,'Genre':genres})
